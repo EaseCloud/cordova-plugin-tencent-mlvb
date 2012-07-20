@@ -1,0 +1,39 @@
+{
+  "name": "cordova-plugin-tencent-mlvb",
+  "version": "0.0.1",
+  "description": "Cordova Tencent MLVB Plugin",
+  "cordova": {
+    "id": "cordova-plugin-tencent-mlvb",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Easecloud/cordova-plugin-tencent-mlvb"
+  },
+  "keywords": [
+    "cordova",
+    "live",
+    "video",
+    "tencent",
+    "qq",
+    "mlvb",
+    "lvb",
+    "cordova-android",
+    "cordova-ios",
+    "rtmp"
+  ],
+  "author": "Foshan EaseCloud Computer Technology Co., Ltd.",
+  "license": "Apache-2.0",
+  "engines": {
+    "cordovaDependencies": {
+      "2.0.0": {
+        "cordova": ">100"
+      }
+    }
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}

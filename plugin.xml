@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-tencent-mlvb"
+    version="0.1.0" xmlns="http://www.phonegap.com/ns/plugins/1.0">
+
+    <name>TencentMLVB</name>
+    <description>Tencent MLVB Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,live,video,tencent,qq,mlvb,lvb</keywords>
+    <repo>https://github.com/EaseCloud/cordova-plugin-tencent-mlvb.git</repo>
+    <issue>https://github.com/EaseCloud/cordova-plugin-tencent-mlvb/issues</issue>
+
+    <engines>
+        <engine name="cordova" version=">=3.5.0" />
+    </engines>
+
+    <asset src="www/mlvb.js" target="js/mlvb.js" />
+
+    <!-- 这里指定了 js 接口层文件的路径 -->
+    <js-module name="TencentMLVB" src="www/mlvb.js">
+        <!-- 这里指定 window.TencentMLVB 可以访问到插件的 js 接口层 -->
+        <clobbers target="TencentMLVB" />
+    </js-module>
+
+    <platform name="android">
+
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="TencentMLVB">
+                <param name="android-package" value="cn.easecloud.cordova.tencent.TencentMLVB" />
+            </feature>
+        </config-file>
+
+        <config-file parent="/*" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+            <uses-permission android:name="android.permission.CALL_PHONE" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.READ_LOGS" />
+            <uses-permission android:name="android.permission.RECORD_AUDIO" />
+            <uses-permission android:name="android.permission.CAMERA" />
+            <uses-feature android:name="android.hardware.Camera" />
+            <uses-feature android:name="android.hardware.camera.autofocus" />
+        </config-file>
+
+        <!-- 腾讯直播 SDK -->
+        <framework src="src/android/build.gradle" custom="true" type="gradleReference"/>
+
+        <source-file src="src/android/libs/txrtmpsdk.jar" target-dir="libs" />
+        <source-file src="src/android/libs/ugcupload.jar" target-dir="libs" />
+        <source-file src="src/android/libs/sha1utils.jar" target-dir="libs" />
+        <source-file src="src/android/libs/cos-sdk-android.1.4.3.6.jar" target-dir="libs" />
+        <source-file src="src/android/libs/okio-1.6.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/okhttp-3.2.0.jar" target-dir="libs" />
+
+        <source-file src="src/android/libs/armeabi" target-dir="libs" />
+
+        <!-- 源文件 -->
+        <source-file src="src/android/TencentMLVB.java" target-dir="src/cn/easecloud/cordova/tencent/" />
+        <source-file src="src/android/res/layout/layout_video.xml" target-dir="res/layout" />
+
+        <!-- 为了节省 Git 仓库空间压缩了 lib 外部库目录，需要在开始构建之前解压 -->
+        <hook type="before_plugin_install" src="src/android/hooks/before_plugin_install/unzip_libs.sh"></hook>
+
+    </platform>
+
+    <platform name="ios">
+        <config-file parent="/widget" target="config.xml">
+            <feature name="TencentMLVB">
+                <param name="ios-package" value="TencentMLVB" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/TencentMLVB.h" />
+        <source-file src="src/ios/TencentMLVB.m" />
+
+        <!-- 腾讯直播 SDK -->
+        <framework src="src/ios/TXRTMPSDK.framework" custom="true"/>
+
+        <!-- 依赖库 -->
+        <framework src="VideoToolbox.framework" />
+        <framework src="SystemConfiguration.framework" />
+        <framework src="CoreTelephony.framework" />
+        <framework src="AVFoundation.framework" />
+        <framework src="CoreMedia.framework" />
+        <framework src="CoreGraphics.framework" />
+        <framework src="libstdc++.tbd" />
+        <framework src="libz.tbd" />
+        <framework src="libiconv.tbd" />
+        <framework src="libresolv.tbd" />
+
+        <!-- 权限声明 -->
+        <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+            <string>直播需要访问您的照相机</string>
+        </config-file>
+        <config-file target="*-Info.plist" parent="NSMicrophoneUsageDescription">
+            <string>直播需要访问您的麦克风</string>
+        </config-file>
+
+        <!-- 为了节省 Git 仓库空间压缩了 lib 外部库目录，需要在开始构建之前解压 -->
+        <hook type="before_plugin_install" src="src/android/hooks/before_plugin_install/unzip_libs.sh"></hook>
+
+    </platform>
+
+</plugin>
