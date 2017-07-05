@@ -17,7 +17,6 @@ module.exports = {
     },
 
     // 推流类方法
-
     startPush: function(url, successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "TencentMLVB", "startPush", [url]);
     },
