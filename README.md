@@ -45,13 +45,13 @@ http://1234.liveplay.myqcloud.com/live/1234_Room47.m3u8
 
 ### 安装插件
 
-##### 方法一：直接命令行安装插件
+#### 方法一：直接命令行安装插件
 
 ```
 cordova plugin add --save https://github.com/easecloud/cordova-plugin-tencent-mlvb.git
 ```
 
-##### 方法二：手动添加 `config.xml` 配置
+#### 方法二：手动添加 `config.xml` 配置
 
 ```
 <plugin name="cordova-plugin-tencent-mlvb" 
@@ -60,10 +60,9 @@ cordova plugin add --save https://github.com/easecloud/cordova-plugin-tencent-ml
 
 然后通过 `cordova prepare` 即可安装。
     
-##### 方法三：手动下载项目源码整个目录，放在 cordova 项目的 plugins 目录下
+#### 方法三：手动下载项目源码整个目录，放在 cordova 项目的 plugins 目录下
 
-API
----
+### API
 
 使用 `window.TencentMLVB` 对象调用相关的方法。
 
