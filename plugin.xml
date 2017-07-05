@@ -98,7 +98,7 @@
         </config-file>
 
         <!-- 为了节省 Git 仓库空间压缩了 lib 外部库目录，需要在开始构建之前解压 -->
-        <hook type="before_plugin_install" src="src/android/hooks/before_plugin_install/unzip_libs.sh"></hook>
+        <hook type="before_plugin_install" src="src/ios/hooks/before_plugin_install/unzip_libs.sh"></hook>
 
     </platform>
 

@@ -2,10 +2,14 @@
 
 module.exports = {
 
-    greet: function (name, successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "TencentMLVB", "greet", [name]);
+    // 错误处理
+    ERROR: {
+//        10001: { msg: '开启推流失败：视图 videoView 已存在' },
+        10002: { msg: '开启推流失败：pusher 已存在' },
+        10003: { msg: '停止推流失败：pusher 不存在' },
     },
 
+    // 获取 SDK 版本号
     getVersion: function(successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "TencentMLVB", "getVersion", []);
     },
@@ -171,11 +175,6 @@ module.exports = {
 
     stopRecord: function(successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "TencentMLVB", "stopRecord", []);
-    },
-
-    // 播放事件处理
-    // https://cloud.tencent.com/document/product/454/7880#.E7.8A.B6.E6.80.81.E7.9B.91.E5.90.AC
-    onPlayEvent: function(eventCallback) {
     },
 
 };
