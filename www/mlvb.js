@@ -7,6 +7,8 @@ module.exports = {
 //        10001: { msg: '开启推流失败：视图 videoView 已存在' },
         10002: { msg: '开启推流失败：pusher 已存在' },
         10003: { msg: '停止推流失败：pusher 不存在' },
+        10004: { msg: '停止播放失败：player 已存在' },
+        10005: { msg: '停止播放失败：player 不存在' },
     },
 
     // 获取 SDK 版本号
@@ -31,8 +33,18 @@ module.exports = {
 
     // 播放类方法
 
-    startPlay: function(url, successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "TencentMLVB", "startPlay", [url]);
+    PLAY_URL_TYPE: {
+        PLAY_TYPE_LIVE_RTMP:     0, // 传入的URL为RTMP直播地址
+        PLAY_TYPE_LIVE_FLV:      1, // 传入的URL为FLV直播地址
+        PLAY_TYPE_VOD_FLV:       2, // 传入的URL为RTMP点播地址
+        PLAY_TYPE_VOD_HLS:       3, // 传入的URL为HLS(m3u8)点播地址
+        PLAY_TYPE_VOD_MP4:       4, // 传入的URL为MP4点播地址
+        PLAY_TYPE_LIVE_RTMP_ACC: 5, // 低延迟连麦链路直播地址（仅适合于连麦场景）
+        PLAY_TYPE_LOCAL_VIDEO:   6  // 手机本地视频文件
+    },
+
+    startPlay: function(url, playUrlType, successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "TencentMLVB", "startPlay", [url, playUrlType]);
     },
 
     stopPlay: function(successCallback, errorCallback) {

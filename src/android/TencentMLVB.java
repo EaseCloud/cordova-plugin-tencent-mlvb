@@ -38,11 +38,13 @@ public class TencentMLVB extends CordovaPlugin {
     private Activity activity;
     private CordovaInterface cordova;
     private CordovaWebView cordovaWebView;
-    //    private WebView webView;
+    private ViewGroup rootView;
+    private WebView webView;
     private CallbackContext callbackContext;
 
     private TXCloudVideoView videoView = null;
     private TXLivePusher mLivePusher = null;
+    private TXLivePlayer mLivePlayer = null;
 
     /**
      * Sets the context of the Command. This can then be used to do things like
@@ -55,10 +57,11 @@ public class TencentMLVB extends CordovaPlugin {
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
         this.cordovaWebView = webView;
-//        this.webView = (WebView) webView;
         this.cordova = cordova;
         this.activity = cordova.getActivity();
         this.context = this.activity.getApplicationContext();
+        this.rootView = (ViewGroup) activity.findViewById(android.R.id.content);
+        this.webView = (WebView) rootView.getChildAt(0);
     }
 
     /**
@@ -74,21 +77,21 @@ public class TencentMLVB extends CordovaPlugin {
 
         this.callbackContext = callbackContext;
 
-//        alert(action);
-
         if (action.equals("getVersion")) {
             return getVersion(callbackContext);
         } else if (action.equals("startPush")) {
-            final String pushUrl = args.getString(0);
-            return startPush(pushUrl, callbackContext);
+            final String url = args.getString(0);
+            return startPush(url, callbackContext);
         } else if (action.equals("stopPush")) {
             return stopPush(callbackContext);
         } else if (action.equals("onPushEvent")) {
             alert("尚未实现");
         } else if (action.equals("startPlay")) {
-            alert("尚未实现");
+            final String url = args.getString(0);
+            final int playType = args.getInt(1);
+            return startPlay(url, playType, callbackContext);
         } else if (action.equals("stopPlay")) {
-            alert("尚未实现");
+            return stopPlay(callbackContext);
         } else if (action.equals("onPlayEvent")) {
             alert("尚未实现");
         } else if (action.equals("setVideoQuality")) {
@@ -147,14 +150,16 @@ public class TencentMLVB extends CordovaPlugin {
         }
     }
 
+    /**
+     * 在当前 Activity 底部 UI 层注册一个 TXCloudVideoView 以供直播渲染
+     */
     private void prepareVideoView() {
-        final ViewGroup rootView = (ViewGroup) activity.findViewById(android.R.id.content);
-        final WebView webView = (WebView) rootView.getChildAt(0);
         if (videoView != null) return;
         // 通过 layout 文件插入 videoView
         LayoutInflater layoutInflater = LayoutInflater.from(activity);
         this.videoView = (TXCloudVideoView) layoutInflater.inflate(_R("layout", "layout_video"), null);
-        activity.runOnUIThread(Runnable runnable = new Runnable() {
+        videoView.setBackgroundColor(Color.WHITE);
+        activity.runOnUiThread(new Runnable() {
             public void run() {
                 // 设置 webView 透明
                 videoView.setLayoutParams(new FrameLayout.LayoutParams(
@@ -170,13 +175,23 @@ public class TencentMLVB extends CordovaPlugin {
                 webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
                 // 将 webView 提到顶层
                 webView.bringToFront();
-                alert("run finish");
             }
         });
     }
 
     /**
-     * 返回 MLVB SDK 版本
+     * 销毁 videoView
+     */
+    private void destroyVideoView() {
+        if (videoView == null) return;
+        videoView.onDestroy();
+        rootView.removeView(videoView);
+        videoView = null;
+        // TODO: 最好能把 webView 变回白色
+    }
+
+    /**
+     * 返回 MLVB SDK 版本字符串
      *
      * @param callbackContext
      * @return
@@ -196,7 +211,10 @@ public class TencentMLVB extends CordovaPlugin {
     }
 
     /**
-     * @param url
+     * 开始推流，并且在垫底的 videoView 显示视频
+     * 会在当前对象上下文注册一个 TXLivePusher
+     *
+     * @param url             推流URL
      * @param callbackContext
      * @return
      */
@@ -214,10 +232,15 @@ public class TencentMLVB extends CordovaPlugin {
         mLivePusher.startPusher(url);
         // 将视频绑定到 videoView
         mLivePusher.startCameraPreview(videoView);
-        alert("Good");
         return true;
     }
 
+    /**
+     * 停止推流，并且注销 mLivePusher 对象
+     *
+     * @param callbackContext
+     * @return
+     */
     private boolean stopPush(final CallbackContext callbackContext) {
         if (mLivePusher == null) {
             callbackContext.error("10003");
@@ -231,6 +254,53 @@ public class TencentMLVB extends CordovaPlugin {
         mLivePusher.setPushListener(null);
         // 移除 pusher 引用
         this.mLivePusher = null;
+        // 销毁 videoView
+        destroyVideoView();
+        return true;
+    }
+
+    /**
+     * 开始播放，在垫底的 videoView 显示视频
+     * 会在当前对象上下文注册一个 TXLivePlayer
+     *
+     * @param url             播放URL
+     * @param playType        播放类型，参见 mlvb.js 相关的枚举定义
+     * @param callbackContext
+     * @return
+     */
+    private boolean startPlay(final String url, final int playType, final CallbackContext callbackContext) {
+        if (mLivePlayer != null) {
+            callbackContext.error("10004");
+            return false;
+        }
+        // 准备 videoView，没有的话生成
+        prepareVideoView();
+        // 开始推流
+        this.mLivePlayer = new TXLivePlayer(activity);
+        TXLivePushConfig mLivePushConfig = new TXLivePushConfig();
+        // 将视频绑定到 videoView
+        mLivePlayer.setPlayerView(videoView);
+        mLivePlayer.startPlay(url, playType);
+        return true;
+    }
+
+    /**
+     * 停止推流，并且注销 mLivePlay 对象
+     *
+     * @param callbackContext
+     * @return
+     */
+    private boolean stopPlay(final CallbackContext callbackContext) {
+        if (mLivePlayer == null) {
+            callbackContext.error("10005");
+            return false;
+        }
+        // 停止播放
+        mLivePlayer.stopPlay(true);
+        // 销毁 videoView
+        destroyVideoView();
+        // 移除 pusher 引用
+        this.mLivePlayer = null;
         return true;
     }
 
