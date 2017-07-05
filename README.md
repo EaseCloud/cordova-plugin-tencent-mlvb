@@ -1,8 +1,6 @@
-# Cordova Hello World Plugin
+# Cordova Tencent MLVB Plugin
 
-Simple plugin that returns your string prefixed with hello.
-
-Greeting a user with "Hello, world" is something that could be done in JavaScript. This plugin provides a simple example demonstrating how Cordova plugins work.
+腾讯云《移动直播》集成 Cordova 插件
 
 ## Using
 
@@ -13,21 +11,13 @@ Create a new Cordova Project
 Install the plugin
 
     $ cd hello
-    $ cordova plugin add https://github.com/don/cordova-plugin-hello.git
+    $ cordova plugin add https://github.com/easecloud/cordova-plugin-tencent-mlvb.git
     
 
 Edit `www/js/index.js` and add the following code inside `onDeviceReady`
 
 ```js
-    var success = function(message) {
-        alert(message);
-    }
-
-    var failure = function() {
-        alert("Error calling Hello Plugin");
-    }
-
-    hello.greet("World", success, failure);
+    TencentMLVB.startPush(url);
 ```
 
 Install iOS or Android platform
