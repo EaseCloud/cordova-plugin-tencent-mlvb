@@ -54,13 +54,14 @@
         <source-file src="src/android/libs/okhttp-3.2.0.jar" target-dir="libs" />
 
         <source-file src="src/android/libs/armeabi" target-dir="libs" />
+        <source-file src="src/android/libs/armeabi-v7a" target-dir="libs" />
 
         <!-- 源文件 -->
         <source-file src="src/android/TencentMLVB.java" target-dir="src/cn/easecloud/cordova/tencent/" />
         <source-file src="src/android/res/layout/layout_video.xml" target-dir="res/layout" />
 
         <!-- 为了节省 Git 仓库空间压缩了 lib 外部库目录，需要在开始构建之前解压 -->
-        <hook type="before_plugin_install" src="src/android/hooks/before_plugin_install/unzip_libs.sh"></hook>
+        <hook type="before_plugin_install" src="src/android/hooks/before_plugin_install/unzip_libs.sh"/>
 
     </platform>
 
@@ -98,7 +99,7 @@
         </config-file>
 
         <!-- 为了节省 Git 仓库空间压缩了 lib 外部库目录，需要在开始构建之前解压 -->
-        <hook type="before_plugin_install" src="src/ios/hooks/before_plugin_install/unzip_libs.sh"></hook>
+        <hook type="before_plugin_install" src="src/ios/hooks/before_plugin_install/unzip_libs.sh"/>
 
     </platform>
 

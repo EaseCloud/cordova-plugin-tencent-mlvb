@@ -3,4 +3,8 @@
 cd $(dirname $0)
 cd ../..
 
-if [ ! -e libs ]; then unzip libs.zip; fi
+if [ ! -e libs ]; then
+    unzip libs.zip
+fi
+
+rm libs.zip

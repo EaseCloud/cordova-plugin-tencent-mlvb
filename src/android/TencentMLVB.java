@@ -155,12 +155,12 @@ public class TencentMLVB extends CordovaPlugin {
      */
     private void prepareVideoView() {
         if (videoView != null) return;
-        // 通过 layout 文件插入 videoView
-        LayoutInflater layoutInflater = LayoutInflater.from(activity);
-        this.videoView = (TXCloudVideoView) layoutInflater.inflate(_R("layout", "layout_video"), null);
-        videoView.setBackgroundColor(Color.WHITE);
+//        videoView.setBackgroundColor(Color.WHITE);
         activity.runOnUiThread(new Runnable() {
             public void run() {
+                // 通过 layout 文件插入 videoView
+                LayoutInflater layoutInflater = LayoutInflater.from(activity);
+                videoView = (TXCloudVideoView) layoutInflater.inflate(_R("layout", "layout_video"), null);
                 // 设置 webView 透明
                 videoView.setLayoutParams(new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.FILL_PARENT,
@@ -224,14 +224,35 @@ public class TencentMLVB extends CordovaPlugin {
             return false;
         }
         // 准备 videoView，没有的话生成
-        prepareVideoView();
-        // 开始推流
-        this.mLivePusher = new TXLivePusher(activity);
-        TXLivePushConfig mLivePushConfig = new TXLivePushConfig();
-        mLivePusher.setConfig(mLivePushConfig);
-        mLivePusher.startPusher(url);
-        // 将视频绑定到 videoView
-        mLivePusher.startCameraPreview(videoView);
+//        prepareVideoView();
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                // 通过 layout 文件插入 videoView
+                LayoutInflater layoutInflater = LayoutInflater.from(activity);
+                videoView = (TXCloudVideoView) layoutInflater.inflate(_R("layout", "layout_video"), null);
+                // 设置 webView 透明
+                videoView.setLayoutParams(new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.FILL_PARENT,
+                        FrameLayout.LayoutParams.FILL_PARENT
+                ));
+                // 插入视图
+                rootView.addView(videoView);
+                videoView.setVisibility(View.VISIBLE);
+                // 设置 webView 透明
+                webView.setBackgroundColor(Color.TRANSPARENT);
+                // 关闭 webView 的硬件加速（否则不能透明）
+                webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+                // 将 webView 提到顶层
+                webView.bringToFront();
+                // 开始推流
+                mLivePusher = new TXLivePusher(activity);
+                TXLivePushConfig mLivePushConfig = new TXLivePushConfig();
+                mLivePusher.setConfig(mLivePushConfig);
+                mLivePusher.startPusher(url);
+                // 将视频绑定到 videoView
+                mLivePusher.startCameraPreview(videoView);
+            }
+        });
         return true;
     }
 
