@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 //import com.tencent.ilivesdk.*;
 //import com.tencent.ilivesdk.core.*;
 //import com.tencent.livesdk.*;
+import org.apache.cordova.PermissionHelper;
 
 import com.tencent.rtmp.*;
 import com.tencent.rtmp.ui.*;
@@ -45,6 +46,18 @@ public class TencentMLVB extends CordovaPlugin {
     private TXCloudVideoView videoView = null;
     private TXLivePusher mLivePusher = null;
     private TXLivePlayer mLivePlayer = null;
+
+    private String[] permissions = {
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_LOGS,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA
+    };
 
     /**
      * Sets the context of the Command. This can then be used to do things like
@@ -74,6 +87,10 @@ public class TencentMLVB extends CordovaPlugin {
      */
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+
+        if (!hasPermisssion()) {
+            requestPermissions(0);
+        }
 
         this.callbackContext = callbackContext;
 
@@ -323,6 +340,28 @@ public class TencentMLVB extends CordovaPlugin {
         // 移除 pusher 引用
         this.mLivePlayer = null;
         return true;
+    }
+
+    /**
+     * check application's permissions
+     */
+    public boolean hasPermisssion() {
+        for (String p : permissions) {
+            if (!PermissionHelper.hasPermission(this, p)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * We override this so that we can access the permissions variable, which no longer exists in
+     * the parent class, since we can't initialize it reliably in the constructor!
+     *
+     * @param requestCode The code to get request action
+     */
+    public void requestPermissions(int requestCode) {
+        PermissionHelper.requestPermissions(this, requestCode, permissions);
     }
 
     public void alert(String msg, String title) {
