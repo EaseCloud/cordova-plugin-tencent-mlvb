@@ -28,7 +28,6 @@ import com.google.gson.Gson;
 //import com.tencent.ilivesdk.*;
 //import com.tencent.ilivesdk.core.*;
 //import com.tencent.livesdk.*;
-import org.apache.cordova.PermissionHelper;
 
 import com.tencent.rtmp.*;
 import com.tencent.rtmp.ui.*;
@@ -52,9 +51,9 @@ public class TencentMLVB extends CordovaPlugin {
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.ACCESS_WIFI_STATE,
             Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.CALL_PHONE,
+//            Manifest.permission.CALL_PHONE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_LOGS,
+//            Manifest.permission.READ_LOGS,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CAMERA
     };
