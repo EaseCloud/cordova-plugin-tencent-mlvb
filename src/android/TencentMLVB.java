@@ -283,16 +283,20 @@ public class TencentMLVB extends CordovaPlugin {
             callbackContext.error("10003");
             return false;
         }
-        // 停止摄像头预览
-        mLivePusher.stopCameraPreview(true);
-        // 停止推流
-        mLivePusher.stopPusher();
-        // 解绑 Listener
-        mLivePusher.setPushListener(null);
-        // 移除 pusher 引用
-        this.mLivePusher = null;
-        // 销毁 videoView
-        destroyVideoView();
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                // 停止摄像头预览
+                mLivePusher.stopCameraPreview(true);
+                // 停止推流
+                mLivePusher.stopPusher();
+                // 解绑 Listener
+                mLivePusher.setPushListener(null);
+                // 移除 pusher 引用
+                mLivePusher = null;
+                // 销毁 videoView
+                destroyVideoView();
+            }
+        });
         return true;
     }
 
@@ -332,12 +336,16 @@ public class TencentMLVB extends CordovaPlugin {
             callbackContext.error("10005");
             return false;
         }
-        // 停止播放
-        mLivePlayer.stopPlay(true);
-        // 销毁 videoView
-        destroyVideoView();
-        // 移除 pusher 引用
-        this.mLivePlayer = null;
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                // 停止播放
+                mLivePlayer.stopPlay(true);
+                // 销毁 videoView
+                destroyVideoView();
+                // 移除 pusher 引用
+                mLivePlayer = null;
+            }
+        });
         return true;
     }
 
