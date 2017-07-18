@@ -64,18 +64,20 @@
     [self.livePusher stopPush];
     self.livePusher.delegate = nil;
     self.livePusher = nil;
+    [self destroyVideoView];
 }
 
 - (void) startPlay:(CDVInvokedUrlCommand*)command {
     if (self.livePlayer) return;
     NSString* url = [command.arguments objectAtIndex:0];
-    TX_Enum_PlayType playUrlType = (TX_Enum_PlayType)[command.arguments objectAtIndex:0];
+//    TX_Enum_PlayType playUrlType = (TX_Enum_PlayType)[command.arguments objectAtIndex:1];
+//    NSInteger playUrlType = (NSInteger)[command.arguments objectAtIndex:1];
 
     [self prepareVideoView];
 
     self.livePlayer = [[TXLivePlayer alloc] init];
     [self.livePlayer setupVideoWidget:CGRectMake(0, 0, 0, 0) containView:videoView insertIndex:0];
-    [self.livePlayer startPlay:url type:playUrlType];
+    [self.livePlayer startPlay:url type:PLAY_TYPE_LIVE_FLV];
 }
 
 - (void) stopPlay:(CDVInvokedUrlCommand*)command {
@@ -83,6 +85,7 @@
     [self.livePlayer stopPlay];
     [self.livePlayer removeVideoWidget];
     self.livePlayer = nil;
+    [self destroyVideoView];
 }
 
 - (void) setVideoQuality:(CDVInvokedUrlCommand*)command {
