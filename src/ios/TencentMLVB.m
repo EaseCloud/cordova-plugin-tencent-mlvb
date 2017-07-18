@@ -101,6 +101,8 @@
 }
 
 - (void) switchCamera:(CDVInvokedUrlCommand*)command {
+    if (!self.livePusher) return;
+    [self.livePusher switchCamera];
 }
 
 - (void) toggleTorch:(CDVInvokedUrlCommand*)command {
