@@ -1,5 +1,16 @@
 #import "TencentMLVB.h"
 
+#import "MainViewController.h"
+
+@implementation MainViewController(CDVViewController)
+- (void) viewDidLoad {
+    [super viewDidLoad];
+    self.webView.backgroundColor = [UIColor clearColor];
+    self.webView.opaque = NO;
+}
+@end
+
+
 @implementation TencentMLVB
 
 @synthesize videoView;
@@ -17,11 +28,10 @@
 //}
 
 - (void) prepareVideoView {
+    if (self.videoView) return;
     self.videoView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     [self.webView.superview addSubview:self.videoView];
     [self.webView.superview bringSubviewToFront:self.webView];
-    [self.webView setBackgroundColor:[UIColor clearColor]];
-    [self.webView setOpaque:NO];
 }
 
 - (void) destroyVideoView {
@@ -29,7 +39,7 @@
     [self.videoView removeFromSuperview];
     self.videoView = nil;
     // 把 webView 变回白色
-    [self.webView setBackgroundColor:[UIColor whiteColor]];
+    // [self.webView setBackgroundColor:[UIColor whiteColor]];
 }
 
 - (void) getVersion:(CDVInvokedUrlCommand*)command {
@@ -39,39 +49,40 @@
 }
 
 - (void) startPush:(CDVInvokedUrlCommand*)command {
+    if (self.livePusher) return;
     NSString* url = [command.arguments objectAtIndex:0];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self prepareVideoView];
-        TXLivePushConfig* _config = [[TXLivePushConfig alloc] init];
-        self.livePusher = [[TXLivePush alloc] initWithConfig: _config];
-        [self.livePusher startPreview:videoView];
-        [self.livePusher startPush:url];
-    });
+    [self prepareVideoView];
+    TXLivePushConfig* _config = [[TXLivePushConfig alloc] init];
+    self.livePusher = [[TXLivePush alloc] initWithConfig: _config];
+    [self.livePusher startPreview:videoView];
+    [self.livePusher startPush:url];
 }
 
 - (void) stopPush:(CDVInvokedUrlCommand*)command {
+    if (!self.livePusher) return;
+    [self.livePusher stopPreview];
+    [self.livePusher stopPush];
+    self.livePusher.delegate = nil;
+    self.livePusher = nil;
 }
 
 - (void) startPlay:(CDVInvokedUrlCommand*)command {
+    if (self.livePlayer) return;
     NSString* url = [command.arguments objectAtIndex:0];
-    id playUrlType = [command.arguments objectAtIndex:0];
+    TX_Enum_PlayType playUrlType = (TX_Enum_PlayType)[command.arguments objectAtIndex:0];
 
-    UIView* videoView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [self prepareVideoView];
 
-    [self.webView setBackgroundColor:[UIColor clearColor]];
-    [self.webView setOpaque:NO];
-
-    [self.webView.superview addSubview:videoView];
-    [self.webView.superview bringSubviewToFront:self.webView];
-
-    //TXLivePushConfig* _config = [[TXLivePushConfig alloc] init];
-    //TXLivePush* _txLivePush = [[TXLivePush alloc] initWithConfig: _config];
-    TXLivePlayer* _txLivePlayer = [[TXLivePlayer alloc] init];
-    [_txLivePlayer setupVideoWidget:CGRectMake(0, 0, 0, 0) containView:videoView insertIndex:0];
-    [_txLivePlayer startPlay:url type:playUrlType];
+    self.livePlayer = [[TXLivePlayer alloc] init];
+    [self.livePlayer setupVideoWidget:CGRectMake(0, 0, 0, 0) containView:videoView insertIndex:0];
+    [self.livePlayer startPlay:url type:playUrlType];
 }
 
 - (void) stopPlay:(CDVInvokedUrlCommand*)command {
+    if (!self.livePlayer) return;
+    [self.livePlayer stopPlay];
+    [self.livePlayer removeVideoWidget];
+    self.livePlayer = nil;
 }
 
 - (void) setVideoQuality:(CDVInvokedUrlCommand*)command {
@@ -130,13 +141,13 @@
 
 - (void) alert:(NSString*)message title:(NSString*)title {
     UIAlertView* alert = [
-        [UIAlertView alloc]
-        initWithTitle:title
-        message:message
-        delegate:nil
-        cancelButtonTitle:@"OK"
-        otherButtonTitles:nil
-    ];
+                          [UIAlertView alloc]
+                          initWithTitle:title
+                          message:message
+                          delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil
+                          ];
     [alert show];
     //[alert release];
 }
