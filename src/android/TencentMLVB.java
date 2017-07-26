@@ -113,20 +113,32 @@ public class TencentMLVB extends CordovaPlugin {
         } else if (action.equals("setVideoQuality")) {
             alert("尚未实现");
         } else if (action.equals("setBeautyFilterDepth")) {
-            alert("尚未实现");
-        } else if (action.equals("setWhiteningFilterDepth")) {
-            alert("尚未实现");
+            // TODO: 尚未测试
+            if (mLivePusher == null) return false;
+            final int beautyDepth = args.getInt(0);
+            final int whiteningDepth = args.getInt(1);
+            mLivePusher.setBeautyFilter(beautyDepth, whiteningDepth);
+        } else if (action.equals("setExposureCompensation")) {
+            // TODO: 尚未测试
+            if (mLivePusher == null) return false;
+            final float depth = (float) args.getDouble(0);
+            mLivePusher.setExposureCompensation(depth);
         } else if (action.equals("setFilter")) {
             alert("尚未实现");
         } else if (action.equals("switchCamera")) {
-            alert("尚未实现");
+            // TODO: 尚未测试
+            if (mLivePusher == null) return false;
+            mLivePusher.switchCamera();
         } else if (action.equals("toggleTorch")) {
-            alert("尚未实现");
+            // TODO: 尚未测试
+            if (mLivePusher == null) return false;
+            final boolean enabled = args.getBoolean(0);
+            mLivePusher.turnOnFlashLight(enabled);
         } else if (action.equals("setFocusPosition")) {
             alert("尚未实现");
         } else if (action.equals("setWaterMark")) {
             alert("尚未实现");
-        } else if (action.equals("setPaushImage")) {
+        } else if (action.equals("setPauseImage")) {
             alert("尚未实现");
         } else if (action.equals("resize")) {
             alert("尚未实现");

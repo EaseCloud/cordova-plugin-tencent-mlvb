@@ -70,20 +70,21 @@ module.exports = {
 
     // 推流
     // 设定美颜级别
-    // depth: 0-9，0 为关闭
-    setBeautyFilterDepth: function(depth, successCallback, errorCallback) {
+    // beautyDepth: 美颜级别 0-9，0 为关闭
+    // whiteningDepth: 美白级别 0-9，0 为关闭
+    setBeautyFilterDepth: function(beautyDepth, whiteningDepth, successCallback, errorCallback) {
         cordova.exec(
             successCallback, errorCallback, "TencentMLVB", "setBeautyFilterDepth",
-            [depth]
+            [beautyDepth, whiteningDepth]
         );
     },
 
     // 推流
-    // 设定美白级别
-    // depth: 0-9，0 为关闭
-    setWhiteningFilterDepth: function(depth, successCallback, errorCallback) {
+    // 设定曝光级别
+    // depth: -1 ~ 1 的浮点数
+    setExposureCompensation: function(depth, successCallback, errorCallback) {
         cordova.exec(
-            successCallback, errorCallback, "TencentMLVB", "setWhiteningFilterDepth",
+            successCallback, errorCallback, "TencentMLVB", "setExposureCompensation",
             [depth]
         );
     },
@@ -133,8 +134,6 @@ module.exports = {
             [imgUrl]
         );
     },
-
-
 
     // 推流 + 播放
     // 调整播放或者推流屏幕的大小，支持 vw, vh 两种单位，表示 1 单位的宽度百分比和 1 单位的高度百分比
