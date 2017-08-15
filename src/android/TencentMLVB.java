@@ -153,9 +153,9 @@ public class TencentMLVB extends CordovaPlugin {
         } else if (action.equals("enableHWAcceleration")) {
             alert("尚未实现");
         } else if (action.equals("startRecord")) {
-            return startRecord(callbackContext);
+//            return startRecord(callbackContext);
         } else if (action.equals("stopRecord")) {
-            return stopRecord(callbackContext);
+//            return stopRecord(callbackContext);
         }
 
         callbackContext.error("Undefined action: " + action);
@@ -344,46 +344,46 @@ public class TencentMLVB extends CordovaPlugin {
         return true;
     }
 
-    /**
-     * 开始录制
-     *
-     * @param callbackContext
-     * @return
-     */
-    private boolean startRecord(final CallbackContext callbackContext) {
-        if (mLivePlayer != null) {
-            callbackContext.error("10006");
-            return false;
-        }
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                //指定一个 ITXVideoRecordListener 用于同步录制的进度和结果
-                mLivePlayer.setVideoRecordListener(recordListener);
-                //启动录制，目前只支持录制视频源，弹幕消息等等目前还不支持
-                mLivePlayer.startRecord(int recordType);
-            }
-        });
-        return true;
-    }
+//    /**
+//     * 开始录制
+//     *
+//     * @param callbackContext
+//     * @return
+//     */
+//    private boolean startRecord(final CallbackContext callbackContext) {
+//        if (mLivePlayer != null) {
+//            callbackContext.error("10006");
+//            return false;
+//        }
+//        activity.runOnUiThread(new Runnable() {
+//            public void run() {
+//                //指定一个 ITXVideoRecordListener 用于同步录制的进度和结果
+//                mLivePlayer.setVideoRecordListener(recordListener);
+//                //启动录制，目前只支持录制视频源，弹幕消息等等目前还不支持
+//                mLivePlayer.startRecord(int recordType);
+//            }
+//        });
+//        return true;
+//    }
 
-    /**
-     * 结束录制
-     *
-     * @param callbackContext
-     * @return
-     */
-    private boolean stopRecord(final CallbackContext callbackContext) {
-        if (mLivePlayer != null) {
-            callbackContext.error("10007");
-            return false;
-        }
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                mLivePlayer.stopRecord();
-            }
-        });
-        return true;
-    }
+//    /**
+//     * 结束录制
+//     *
+//     * @param callbackContext
+//     * @return
+//     */
+//    private boolean stopRecord(final CallbackContext callbackContext) {
+//        if (mLivePlayer != null) {
+//            callbackContext.error("10007");
+//            return false;
+//        }
+//        activity.runOnUiThread(new Runnable() {
+//            public void run() {
+//                mLivePlayer.stopRecord();
+//            }
+//        });
+//        return true;
+//    }
 
     /**
      * check application's permissions
