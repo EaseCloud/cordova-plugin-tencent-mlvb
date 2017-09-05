@@ -16,6 +16,11 @@ module.exports = {
         cordova.exec(successCallback, errorCallback, "TencentMLVB", "getVersion", []);
     },
 
+    // 设置最小字号以解决兼容 BUG
+    fixMinFontSize: function(successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "TencentMLVB", "fixMinFontSize", []);
+    },
+
     // 推流类方法
     startPush: function(url, successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "TencentMLVB", "startPush", [url]);

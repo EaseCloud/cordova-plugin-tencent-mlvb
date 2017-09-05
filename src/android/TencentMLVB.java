@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
@@ -40,6 +41,7 @@ public class TencentMLVB extends CordovaPlugin {
     private CordovaWebView cordovaWebView;
     private ViewGroup rootView;
     private WebView webView;
+    private WebSettings settings;
     private CallbackContext callbackContext;
 
     private TXCloudVideoView videoView = null;
@@ -111,9 +113,13 @@ public class TencentMLVB extends CordovaPlugin {
         } else if (action.equals("onPlayEvent")) {
             alert("尚未实现");
         } else if (action.equals("setVideoQuality")) {
-            alert("尚未实现");
+            if (mLivePusher == null) return false;
+            final int quality = args.getInt(0);
+            final int adjustBitrate = args.getInt(1);
+            final int adjustResolution = args.getInt(2);
+//            mLivePusher.setVideoQuality(quality, adjustBitrate, adjustResolution);
+            mLivePusher.setVideoQuality(quality);
         } else if (action.equals("setBeautyFilterDepth")) {
-            // TODO: 尚未测试
             if (mLivePusher == null) return false;
             final int beautyDepth = args.getInt(0);
             final int whiteningDepth = args.getInt(1);
@@ -126,7 +132,6 @@ public class TencentMLVB extends CordovaPlugin {
         } else if (action.equals("setFilter")) {
             alert("尚未实现");
         } else if (action.equals("switchCamera")) {
-            // TODO: 尚未测试
             if (mLivePusher == null) return false;
             mLivePusher.switchCamera();
         } else if (action.equals("toggleTorch")) {
@@ -156,6 +161,9 @@ public class TencentMLVB extends CordovaPlugin {
 //            return startRecord(callbackContext);
         } else if (action.equals("stopRecord")) {
 //            return stopRecord(callbackContext);
+        } else if (action.equals("fixMinFontSize")) {
+//            return stopRecord(callbackContext);
+            return fixMinFontSize(callbackContext);
         }
 
         callbackContext.error("Undefined action: " + action);
@@ -232,6 +240,24 @@ public class TencentMLVB extends CordovaPlugin {
         }
         callbackContext.error("Cannot get rtmp sdk version.");
         return false;
+    }
+
+    /**
+     * 设置最小字号
+     *
+     * @param callbackContext
+     * @return
+     */
+    private boolean fixMinFontSize(final CallbackContext callbackContext) {
+        try {
+            settings = ((WebView) cordovaWebView.getEngine().getView()).getSettings();
+            settings.setMinimumFontSize(1);
+            settings.setMinimumLogicalFontSize(1);
+        } catch (Exception error) {
+            callbackContext.error("10003");
+            return false;
+        }
+        return true;
     }
 
     /**
